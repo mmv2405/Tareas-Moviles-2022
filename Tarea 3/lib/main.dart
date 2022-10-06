@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'detailsScreen.dart';
 import 'homeScreen.dart';
 
 void main() => runApp(const MyApp());
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,15 +11,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flumtter emo',
-      theme: ThemeData(
-        primarySwatch: Colors.grey,
-      ),
+      title: 'Flumtter demo',
+      theme:
+          ThemeData(brightness: Brightness.dark, primaryColor: Colors.blueGrey),
       initialRoute: '/',
       routes: {
         '/': (context) => homeScreen(),
+        '/details': (context) => detailSscreen(),
       },
     );
   }
 }
-
