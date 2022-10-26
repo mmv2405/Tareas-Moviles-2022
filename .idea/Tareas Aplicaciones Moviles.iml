@@ -20,15 +20,6 @@
       <excludeFolder url="file://$MODULE_DIR$/Tarea 4/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/Tarea 4/build" />
       <excludeFolder url="file://$MODULE_DIR$/Tarea 4/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/Tarea 2/build" />
-      <excludeFolder url="file://$MODULE_DIR$/Tarea 2/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/Tarea 2/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/state_managment/.dart_tool" />
-      <excludeFolder url="file://$MODULE_DIR$/state_managment/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/state_managment/build" />
-      <excludeFolder url="file://$MODULE_DIR$/firebase/.pub" />
-      <excludeFolder url="file://$MODULE_DIR$/firebase/build" />
-      <excludeFolder url="file://$MODULE_DIR$/firebase/.dart_tool" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 33, extension level 3 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
