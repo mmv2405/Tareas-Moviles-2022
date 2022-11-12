@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:find_track_app/Screens/homeScreen.dart';
+import 'package:find_track_app/utils/widgets/snackBars.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 bool toggle = true;
-bool cancel = false;
 
 class Music extends StatefulWidget {
   final String imageUrl;
@@ -33,6 +34,21 @@ class Music extends StatefulWidget {
 }
 
 class _MusicState extends State<Music> {
+  bool cancel = false;
+
+  CollectionReference favs = FirebaseFirestore.instance.collection('favs');
+
+  Future<void> uploadFav() {
+    // Calling the collection to add a new user
+    return favs
+        //adding to firebase collection
+        .add({
+      //Data added in the form of a dictionary into the document.
+      'imageUrl': widget.imageUrl,
+      'title': widget.title,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,17 +71,58 @@ class _MusicState extends State<Music> {
           IconButton(
               icon: toggle ? Icon(Icons.favorite_border) : Icon(Icons.favorite),
               onPressed: () {
+                //UPLOAD AND REMOVE FROM FIREBASE
                 if (toggle == false) {
-                  showAlertDialog(context);
-                  if (cancel == true) {
-                    setState(() {
-                      toggle = !toggle;
-                    });
-                  }
+                  // set up the buttons
+                  bool cancel = false;
+                  Widget cancelButton = TextButton(
+                    child: Text("Cancel"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  );
+                  Widget continueButton = TextButton(
+                    child: Text("Eliminar"),
+                    onPressed: () {
+                      setState(() {
+                        toggle = !toggle;
+                      });
+
+                      showSnackBar('Removed from favorites!', context);
+                      cancel = !cancel;
+                      Navigator.of(context).pop();
+                    },
+                  );
+
+                  // set up the AlertDialog
+                  AlertDialog alert = AlertDialog(
+                    title: Text("Eliminar de favoritos"),
+                    content: Text(
+                        "El elemento sera eliminado de tus favoritos. Deseas continuar?"),
+                    actions: [
+                      cancelButton,
+                      continueButton,
+                    ],
+                  );
+
+                  // show the dialog
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
+
+                  setState(() {
+                    toggle;
+                  });
+                } else {
+                  uploadFav();
+                  showSnackBar('Added to favorites!', context);
+                  setState(() {
+                    toggle = !toggle;
+                  });
                 }
-                setState(() {
-                  toggle = !toggle;
-                });
               }),
         ],
       ),
@@ -152,40 +209,4 @@ class _MusicState extends State<Music> {
       ),
     );
   }
-}
-
-showAlertDialog(BuildContext context) {
-  // set up the buttons
-  Widget cancelButton = TextButton(
-    child: Text("Cancel"),
-    onPressed: () {
-      Navigator.of(context).pop();
-    },
-  );
-  Widget continueButton = TextButton(
-    child: Text("Eliminar"),
-    onPressed: () {
-      cancel = !cancel;
-      Navigator.of(context).pop();
-    },
-  );
-
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    title: Text("Eliminar de favoritos"),
-    content:
-        Text("El elemento sera eliminado de tus favoritos. Deseas continuar?"),
-    actions: [
-      cancelButton,
-      continueButton,
-    ],
-  );
-
-  // show the dialog
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
 }

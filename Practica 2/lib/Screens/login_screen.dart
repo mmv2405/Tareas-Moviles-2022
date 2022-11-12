@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../utils/widgets/snackBars.dart';
+
 class LoginUser extends StatefulWidget {
   const LoginUser({Key? key}) : super(key: key);
 
@@ -107,10 +109,4 @@ class _LoginUserState extends State<LoginUser> {
       ),
     );
   }
-}
-
-showSnackBar(String content, BuildContext context) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(content)),
-  );
 }

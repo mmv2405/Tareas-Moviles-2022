@@ -10,7 +10,8 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
-import '../secrets.dart';
+import '../logic/firestore_logic.dart';
+import '../utils/secrets.dart';
 
 bool _cancel = false;
 bool pressGeoON = false;
@@ -107,7 +108,8 @@ class VerFavorito extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
+      onPressed: () async {
+        getDataFirestore();
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const favorites()),
