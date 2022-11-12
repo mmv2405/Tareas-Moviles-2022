@@ -1,3 +1,4 @@
+import 'package:find_track_app/Screens/homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -6,33 +7,47 @@ bool toggle = true;
 bool cancel = false;
 
 class Music extends StatefulWidget {
-  // Music({this.dataMusic});
-  //
-  // dynamic dataMusic;
+  final String imageUrl;
 
+  final String title;
+  final String album;
+  final String artist;
+  final String release_date;
+  final String spotify;
+  final String link;
+  final String apple;
+
+  Music(
+      {Key? key,
+      required this.imageUrl,
+      required this.title,
+      required this.album,
+      required this.artist,
+      required this.release_date,
+      required this.spotify,
+      required this.link,
+      required this.apple})
+      : super(key: key);
   @override
   State<Music> createState() => _MusicState();
 }
 
 class _MusicState extends State<Music> {
-  //
-  //  //late String url;
-  //
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Warriors'),
+        title: Text(
+          widget.title,
+          style: TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => homeScreen()),
+            );
           },
           icon: Icon(Icons.arrow_back),
         ),
@@ -57,22 +72,20 @@ class _MusicState extends State<Music> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Container(
-              child: Image.network(
-                  'https://i.scdn.co/image/d3acaeb069f37d8e257221f7224c813c5fa6024e')),
+          Container(child: Image.network(widget.imageUrl)),
           Container(
             child: Column(
               children: [
                 Text(
-                  'Warriors',
+                  widget.title,
                   style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  'Warriors',
+                  widget.album,
                   style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                 ),
-                Text('Imagine Dragons'),
-                Text('2014-09-18'),
+                Text(widget.artist),
+                Text(widget.release_date),
               ],
             ),
           ),
@@ -95,8 +108,7 @@ class _MusicState extends State<Music> {
                           size: 40,
                         ),
                         onPressed: () async {
-                          final Uri _url = Uri.parse(
-                              'https://open.spotify.com/artist/53XhwfbYqKCa1cC15pYq2q');
+                          final Uri _url = Uri.parse(widget.spotify);
 
                           if (!await launchUrl(_url)) {
                             throw 'Could not launch $_url';
@@ -109,7 +121,7 @@ class _MusicState extends State<Music> {
                           size: 40,
                         ),
                         onPressed: () async {
-                          final Uri _url = Uri.parse('https://lis.tn/Warriors');
+                          final Uri _url = Uri.parse(widget.link);
 
                           if (!await launchUrl(_url)) {
                             throw 'Could not launch $_url';
@@ -122,8 +134,7 @@ class _MusicState extends State<Music> {
                           size: 40,
                         ),
                         onPressed: () async {
-                          final Uri _url = Uri.parse(
-                              'https://music.apple.com/us/album/warriors/1440831203?i=1440831624');
+                          final Uri _url = Uri.parse(widget.apple);
 
                           if (!await launchUrl(_url)) {
                             throw 'Could not launch $_url';

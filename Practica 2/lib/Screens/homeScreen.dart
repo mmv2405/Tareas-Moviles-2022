@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:find_track_app/Screens/favorites.dart';
 import 'package:find_track_app/Screens/login_screen.dart';
 import 'package:find_track_app/Screens/music.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +10,23 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 
-bool _toggle = true;
+import '../secrets.dart';
+
 bool _cancel = false;
 bool pressGeoON = false;
 bool cmbscritta = false;
 bool hear = false;
 final recorder = FlutterSoundRecorder();
+
+var mainDataMusic;
+String imageUrl = '';
+String titleNew = '';
+String albumNew = '';
+String artistNew = '';
+String release_dateNew = '';
+String spotifyNew = '';
+String linkNew = '';
+String appleNew = '';
 
 Future record() async {
   await recorder.startRecorder(toFile: 'audio');
@@ -70,11 +82,6 @@ class _homeScreenState extends State<homeScreen> {
                 if (duration.inSeconds == 4) {
                   getData();
                   recorder.isRecording ? Avatar() : Avatar2();
-                  Future.delayed(Duration.zero, () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => Music()),
-                        (route) => false);
-                  });
 
                   cmbscritta = !cmbscritta;
                 }
@@ -101,7 +108,10 @@ class VerFavorito extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        Navigator.pushNamed(context, '/music');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const favorites()),
+        );
       },
       style: ButtonStyle(
         foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
@@ -158,7 +168,21 @@ class _MiddleCircleState extends State<MiddleCircle> {
         onTap: () async {
           if (recorder.isRecording) {
             await getData();
-            print(getData());
+            Future.delayed(Duration.zero, () {
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (context) => Music(
+                            imageUrl: imageUrl,
+                            title: titleNew,
+                            album: albumNew,
+                            artist: artistNew,
+                            release_date: release_dateNew,
+                            spotify: spotifyNew,
+                            link: linkNew,
+                            apple: appleNew,
+                          )),
+                  (route) => false);
+            });
           } else {
             await record();
           }
@@ -255,7 +279,7 @@ dynamic getData() async {
 
   String first = 'https://api.audd.io/?';
   String dataLinks = 'apple_music,spotify';
-  String apiKey = '1511013dfc18c91b74272e8d66a8618c';
+
   http.Response response = await http.post(
     Uri.parse('https://api.audd.io/'),
     headers: {'Content-Type': 'multipart/form-data'},
@@ -270,10 +294,11 @@ dynamic getData() async {
   );
   if (response.statusCode == 200) {
     String data = (response.body);
-    //var image =jsonDecode(data)['result']['spotify']['album']['images'][0]['url'];
+    var image =
+        jsonDecode(data)['result']['spotify']['album']['images'][0]['url'];
 
     var title = jsonDecode(data)['result']['title'];
-    //var album = jsonDecode(data)['result']['album'];
+    var album = jsonDecode(data)['result']['album'];
     var artist = jsonDecode(data)['result']['artist'];
     var release_date = jsonDecode(data)['result']['release_date'];
 
@@ -283,9 +308,32 @@ dynamic getData() async {
     var apple = jsonDecode(data)['result']['apple_music']['url'];
 
     var dataMusic = (jsonDecode(response.body));
-    print(dataMusic);
 
-    return dataMusic;
+    if (dataMusic != null) {
+      var mainDataMusic = [
+        image,
+        title,
+        album,
+        artist,
+        release_date,
+        spotify,
+        link,
+        apple
+      ];
+
+      imageUrl = (mainDataMusic[0].toString());
+      titleNew = (mainDataMusic[1].toString());
+      albumNew = (mainDataMusic[2].toString());
+      artistNew = (mainDataMusic[3].toString());
+      release_dateNew = (mainDataMusic[4].toString());
+      spotifyNew = (mainDataMusic[5].toString());
+      linkNew = (mainDataMusic[6].toString());
+      appleNew = (mainDataMusic[7].toString());
+
+      print(mainDataMusic[1].toString());
+      print(mainDataMusic);
+    }
+    return mainDataMusic;
   } else {
     throw Exception('Cant find song');
   }
@@ -309,7 +357,7 @@ showAlertDialog(BuildContext context) {
   Widget continueButton = TextButton(
     child: Text("Cerrar sesion"),
     onPressed: () {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginUser()),
       );
